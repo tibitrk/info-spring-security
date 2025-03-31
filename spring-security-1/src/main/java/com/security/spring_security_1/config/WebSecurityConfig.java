@@ -54,16 +54,16 @@ public class WebSecurityConfig {
                 .build();
         return new InMemoryUserDetailsManager(tibit,apple);
     }
-//    @Bean
-//    public BCryptPasswordEncoder bCryptPasswordEncoder(){
-//        return new BCryptPasswordEncoder(14);
-//    }
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+        return new BCryptPasswordEncoder(14);
+    }
     @Bean
     public AuthenticationProvider  authenticationProvider(){
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
-        provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
-//         provider.setPasswordEncoder(bCryptPasswordEncoder());
+//        provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
+         provider.setPasswordEncoder(bCryptPasswordEncoder());
         return provider;
     }
 
