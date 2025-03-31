@@ -17,18 +17,17 @@ public class UserController {
 
     @PostMapping("/register")
     public User saveUser(@RequestBody User user) {
-        System.out.println("password " + user.getPassword());
-
         return userService.registerUser(user);
     }
 
     @PostMapping("/login")
     public String loginUSer(@RequestBody User user) {
-        User isExist = userService.loginUser(user.getName());
-        if (isExist != null ) {
-            return "success";
-        } else {
-            return "failure";
-        }
+//        User isExist = userService.loginUser(user.getName());
+//        if (isExist != null ) {
+//            return "success";
+//        } else {
+//            return "failure";
+//        }
+        return userService.verify(user);
     }
 }
