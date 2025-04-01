@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 
 @Configuration
@@ -23,10 +24,13 @@ import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 public class WebSecurityConfig {
 
     private final UserDetailsService userDetailsService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public WebSecurityConfig(UserDetailsService userDetailsService) {
+    public WebSecurityConfig(UserDetailsService userDetailsService, JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.userDetailsService = userDetailsService;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -40,22 +44,24 @@ public class WebSecurityConfig {
                                 .anyRequest().authenticated()
                 )
 
-                .httpBasic(Customizer.withDefaults());
+                .httpBasic(Customizer.withDefaults())
+                .addFilterBefore(jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class) ;
         return httpSecurity.build();
     }
-    @Bean
-    public UserDetailsService userDetailsService(){
-        UserDetails  tibit = User.withUsername("tibit")
-                .password("{noop}tibit")
-                .roles("USER")
-                .build();
-
-        UserDetails  apple = User.withUsername("apple")
-                .password("{noop}apple")
-                .roles("USER")
-                .build();
-        return new InMemoryUserDetailsManager(tibit,apple);
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService(){
+//        UserDetails  tibit = User.withUsername("tibit")
+//                .password("{noop}tibit")
+//                .roles("USER")
+//                .build();
+//
+//        UserDetails  apple = User.withUsername("apple")
+//                .password("{noop}apple")
+//                .roles("USER")
+//                .build();
+//        return new InMemoryUserDetailsManager(tibit,apple);
+//    }
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder(){
         return new BCryptPasswordEncoder(14);
